@@ -1,0 +1,1426 @@
+%SIGNAL
+PIN  39 =  C0 
+PIN  37 =  C1 
+PIN  81 =  CLK 
+PIN   0 =  CNTR_START 
+PIN  65 =  DATA0 
+PIN  56 =  DATA1 
+PIN  57 =  DATA2 
+PIN  54 =  DATA3 
+PIN  50 =  DATA4 
+PIN  48 =  DATA5 
+PIN  45 =  DATA6 
+PIN  46 =  DATA7 
+PIN  24 =  DATA8 
+PIN  25 =  DATA9 
+PIN  22 =  DATA10 
+PIN  21 =  DATA11 
+PIN   0 =  ILC0 
+PIN   0 =  ILC1 
+PIN   0 =  ILC2 
+PIN   0 =  ILC3 
+PIN  33 =  INIT 
+PIN  36 =  INTERNAL_IO 
+PIN   0 =  INT_EN 
+PIN  34 =  INT_RQST 
+PIN  79 =  LED0 
+PIN  75 =  LED1 
+PIN  77 =  LED2 
+PIN  58 = !MD3 
+PIN  55 = !MD4 
+PIN  51 = !MD5 
+PIN  52 = !MD6 
+PIN  49 = !MD7 
+PIN  30 = !MD8 
+PIN  29 = !MD9 
+PIN  28 = !MD10 
+PIN  27 = !MD11 
+PIN  41 = !OMNI_IO_PAUSE 
+PIN   0 =  RC0 
+PIN   0 =  RC1 
+PIN   0 =  RC2 
+PIN   0 =  RC3 
+PIN   0 =  RDRRUN 
+PIN   0 =  RLC0 
+PIN   0 =  RLC1 
+PIN   0 =  RLC2 
+PIN   0 =  RLC3 
+PIN   0 =  RS0 
+PIN   0 =  RS1 
+PIN   0 =  RS2 
+PIN   0 =  RS3 
+PIN   0 =  RS4 
+PIN   0 =  RS5 
+PIN   0 =  RS6 
+PIN   0 =  RS7 
+PIN   0 =  RS8 
+PIN   0 =  RS9 
+PIN   0 =  RS10 
+PIN   0 =  RS11 
+PIN   0 =  RSR0 
+PIN   0 =  RSR1 
+PIN   0 =  RSR2 
+PIN   0 =  RSR3 
+PIN   0 =  RSR4 
+PIN   0 =  RSR5 
+PIN   0 =  RSR6 
+PIN   0 =  RSR7 
+PIN  12 = !RXA0 
+PIN  10 = !RXA1 
+PIN  15 = !RXA2 
+PIN  16 = !RXA3 
+PIN  17 = !RXA4 
+PIN  18 = !RXA5 
+PIN   0 =  RX_FLAG 
+PIN  31 =  SKIP 
+PIN   0 =  STROBE 
+PIN   0 =  TC0 
+PIN   0 =  TC1 
+PIN   0 =  TC2 
+PIN   0 =  TC3 
+PIN   0 =  TCK0 
+PIN   0 =  TCK1 
+PIN   0 =  TCK2 
+PIN   0 =  TCK3 
+PIN   0 =  TCK4 
+PIN   0 =  TCK5 
+PIN   0 =  TCK6 
+PIN   0 =  TCK7 
+PIN   0 =  TCK8 
+PIN   0 =  TCK9 
+PIN   0 =  TCK10 
+PIN   0 =  TCK11 
+PIN   0 =  TCK12 
+PIN   0 =  TCK13 
+PIN   0 =  TLC0 
+PIN   0 =  TLC1 
+PIN   0 =  TLC2 
+PIN   0 =  TLC3 
+PIN  40 =  TP3 
+PIN   0 =  TS0 
+PIN   0 =  TS1 
+PIN   0 =  TS2 
+PIN   0 =  TS3 
+PIN   0 =  TS4 
+PIN   0 =  TS5 
+PIN   0 =  TS6 
+PIN   0 =  TS7 
+PIN   0 =  TS8 
+PIN   0 =  TS9 
+PIN   0 =  TS10 
+PIN   0 =  TS11 
+PIN   0 =  TSR0 
+PIN   0 =  TSR1 
+PIN   0 =  TSR2 
+PIN   0 =  TSR3 
+PIN   0 =  TSR4 
+PIN   0 =  TSR5 
+PIN   0 =  TSR6 
+PIN   0 =  TSR7 
+PIN  67 = !TXA0 
+PIN  68 = !TXA1 
+PIN  69 = !TXA2 
+PIN  70 = !TXA3 
+PIN  73 = !TXA4 
+PIN  76 = !TXA5 
+PIN   0 =  TX_FLAG 
+PIN   9 =  UART_RX 
+PIN   0 =  UART_RX_D1 
+PIN  11 =  UART_TX 
+%END
+
+%FIELD
+FIELD rx_state = RS11,RS10,RS9,RS8,RS7,RS6,RS5,RS4,RS3,RS2,RS1,RS0
+FIELD tx_state = TS11,TS10,TS9,TS8,TS7,TS6,TS5,TS4,TS3,TS2,TS1,TS0
+%END
+
+%EQUATION
+C0 =>
+    !OMNI_IO_PAUSE
+  # MD3 & !RXA0
+  # !MD7 & !RXA0
+  # !MD8 & !RXA0
+  # !MD3 & RXA0
+  # !MD3 & !MD7
+  # !MD3 & !MD8
+  # MD4
+  # MD5
+  # MD6
+  # MD7 & RXA0
+  # MD3 & MD7
+  # MD7 & !MD8
+  # MD8 & RXA0
+  # MD3 & MD8
+  # !MD7 & MD8
+  # !MD10
+  # MD11
+
+C1 =>
+    !MD9 & !MD10
+  # MD11
+  # !OMNI_IO_PAUSE
+  # MD3 & !RXA0
+  # !MD7 & !RXA0
+  # !MD8 & !RXA0
+  # !MD3 & RXA0
+  # !MD3 & !MD7
+  # !MD3 & !MD8
+  # MD4
+  # MD5
+  # MD6
+  # MD7 & RXA0
+  # MD3 & MD7
+  # MD7 & !MD8
+  # MD8 & RXA0
+  # !MD7 & MD8
+  # MD3 & MD8
+
+CNTR_START.d  =>
+    RC0 & RC1 & RC2 & !RC3 & RS1
+
+CNTR_START.ar  =>
+    INIT
+
+CNTR_START.ck  =>
+    CLK
+
+DATA0.d  =>
+    1 
+
+DATA0.ar  =>
+    INIT
+
+DATA0.ck  =>
+    RS11
+
+DATA0.oe  =>
+    !MD3 & !MD4 & !MD5 & !MD6 & MD7 & MD8 & MD9 & !MD11 & OMNI_IO_PAUSE & !RXA0
+  # MD3 & !MD4 & !MD5 & !MD6 & !MD7 & !MD8 & MD9 & !MD11 & OMNI_IO_PAUSE & RXA0
+
+DATA1.d  =>
+    1 
+
+DATA1.ar  =>
+    INIT
+
+DATA1.ck  =>
+    RS11
+
+DATA1.oe  =>
+    !MD3 & !MD4 & !MD5 & !MD6 & MD7 & MD8 & MD9 & !MD11 & OMNI_IO_PAUSE & !RXA0
+  # MD3 & !MD4 & !MD5 & !MD6 & !MD7 & !MD8 & MD9 & !MD11 & OMNI_IO_PAUSE & RXA0
+
+DATA2.d  =>
+    1 
+
+DATA2.ar  =>
+    INIT
+
+DATA2.ck  =>
+    RS11
+
+DATA2.oe  =>
+    !MD3 & !MD4 & !MD5 & !MD6 & MD7 & MD8 & MD9 & !MD11 & OMNI_IO_PAUSE & !RXA0
+  # MD3 & !MD4 & !MD5 & !MD6 & !MD7 & !MD8 & MD9 & !MD11 & OMNI_IO_PAUSE & RXA0
+
+DATA3.d  =>
+    1 
+
+DATA3.ar  =>
+    INIT
+
+DATA3.ck  =>
+    RS11
+
+DATA3.oe  =>
+    !MD3 & !MD4 & !MD5 & !MD6 & MD7 & MD8 & MD9 & !MD11 & OMNI_IO_PAUSE & !RXA0
+  # MD3 & !MD4 & !MD5 & !MD6 & !MD7 & !MD8 & MD9 & !MD11 & OMNI_IO_PAUSE & RXA0
+
+DATA4.d  =>
+    !RSR7
+
+DATA4.ar  =>
+    INIT
+
+DATA4.ck  =>
+    RS11
+
+DATA4.oe  =>
+    !MD3 & !MD4 & !MD5 & !MD6 & MD7 & MD8 & MD9 & !MD11 & OMNI_IO_PAUSE & !RXA0
+  # MD3 & !MD4 & !MD5 & !MD6 & !MD7 & !MD8 & MD9 & !MD11 & OMNI_IO_PAUSE & RXA0
+
+DATA5.d  =>
+    !RSR6
+
+DATA5.ar  =>
+    INIT
+
+DATA5.ck  =>
+    RS11
+
+DATA5.oe  =>
+    !MD3 & !MD4 & !MD5 & !MD6 & MD7 & MD8 & MD9 & !MD11 & OMNI_IO_PAUSE & !RXA0
+  # MD3 & !MD4 & !MD5 & !MD6 & !MD7 & !MD8 & MD9 & !MD11 & OMNI_IO_PAUSE & RXA0
+
+DATA6.d  =>
+    !RSR5
+
+DATA6.ar  =>
+    INIT
+
+DATA6.ck  =>
+    RS11
+
+DATA6.oe  =>
+    !MD3 & !MD4 & !MD5 & !MD6 & MD7 & MD8 & MD9 & !MD11 & OMNI_IO_PAUSE & !RXA0
+  # MD3 & !MD4 & !MD5 & !MD6 & !MD7 & !MD8 & MD9 & !MD11 & OMNI_IO_PAUSE & RXA0
+
+DATA7.d  =>
+    !RSR4
+
+DATA7.ar  =>
+    INIT
+
+DATA7.ck  =>
+    RS11
+
+DATA7.oe  =>
+    !MD3 & !MD4 & !MD5 & !MD6 & MD7 & MD8 & MD9 & !MD11 & OMNI_IO_PAUSE & !RXA0
+  # MD3 & !MD4 & !MD5 & !MD6 & !MD7 & !MD8 & MD9 & !MD11 & OMNI_IO_PAUSE & RXA0
+
+DATA8.d  =>
+    !RSR3
+
+DATA8.ar  =>
+    INIT
+
+DATA8.ck  =>
+    RS11
+
+DATA8.oe  =>
+    !MD3 & !MD4 & !MD5 & !MD6 & MD7 & MD8 & MD9 & !MD11 & OMNI_IO_PAUSE & !RXA0
+  # MD3 & !MD4 & !MD5 & !MD6 & !MD7 & !MD8 & MD9 & !MD11 & OMNI_IO_PAUSE & RXA0
+
+DATA9.d  =>
+    !RSR2
+
+DATA9.ar  =>
+    INIT
+
+DATA9.ck  =>
+    RS11
+
+DATA9.oe  =>
+    !MD3 & !MD4 & !MD5 & !MD6 & MD7 & MD8 & MD9 & !MD11 & OMNI_IO_PAUSE & !RXA0
+  # MD3 & !MD4 & !MD5 & !MD6 & !MD7 & !MD8 & MD9 & !MD11 & OMNI_IO_PAUSE & RXA0
+
+DATA10.d  =>
+    !RSR1
+
+DATA10.ar  =>
+    INIT
+
+DATA10.ck  =>
+    RS11
+
+DATA10.oe  =>
+    !MD3 & !MD4 & !MD5 & !MD6 & MD7 & MD8 & MD9 & !MD11 & OMNI_IO_PAUSE & !RXA0
+  # MD3 & !MD4 & !MD5 & !MD6 & !MD7 & !MD8 & MD9 & !MD11 & OMNI_IO_PAUSE & RXA0
+
+DATA11.d  =>
+    !RSR0
+
+DATA11.ar  =>
+    INIT
+
+DATA11.ck  =>
+    RS11
+
+DATA11.oe  =>
+    !MD3 & !MD4 & !MD5 & !MD6 & MD7 & MD8 & MD9 & !MD11 & OMNI_IO_PAUSE & !RXA0
+  # MD3 & !MD4 & !MD5 & !MD6 & !MD7 & !MD8 & MD9 & !MD11 & OMNI_IO_PAUSE & RXA0
+
+EDGE_DETECT =>
+    !UART_RX
+
+ILC0.t  =>
+    1 
+
+ILC0.ar  =>
+    INIT
+  # INT_EN
+
+ILC0.ce  =>
+    1 
+
+ILC0.ck  =>
+    !TCK0 & !TCK1 & !TCK2 & !TCK3 & !TCK4 & !TCK5 & !TCK6 & !TCK7 & !TCK8 & !TCK9 & !TCK10 & !TCK11 & !TCK12 & !TCK13
+
+ILC1.t  =>
+    ILC0
+
+ILC1.ar  =>
+    INIT
+  # INT_EN
+
+ILC1.ce  =>
+    1 
+
+ILC1.ck  =>
+    !TCK0 & !TCK1 & !TCK2 & !TCK3 & !TCK4 & !TCK5 & !TCK6 & !TCK7 & !TCK8 & !TCK9 & !TCK10 & !TCK11 & !TCK12 & !TCK13
+
+ILC2.t  =>
+    ILC0 & ILC1
+
+ILC2.ar  =>
+    INIT
+  # INT_EN
+
+ILC2.ce  =>
+    1 
+
+ILC2.ck  =>
+    !TCK0 & !TCK1 & !TCK2 & !TCK3 & !TCK4 & !TCK5 & !TCK6 & !TCK7 & !TCK8 & !TCK9 & !TCK10 & !TCK11 & !TCK12 & !TCK13
+
+ILC3.t  =>
+    ILC0 & ILC1 & ILC2
+
+ILC3.ar  =>
+    INIT
+  # INT_EN
+
+ILC3.ce  =>
+    1 
+
+ILC3.ck  =>
+    !TCK0 & !TCK1 & !TCK2 & !TCK3 & !TCK4 & !TCK5 & !TCK6 & !TCK7 & !TCK8 & !TCK9 & !TCK10 & !TCK11 & !TCK12 & !TCK13
+
+ILC_FULL =>
+    ILC0 & ILC1 & ILC2 & ILC3
+
+INTERNAL_IO =>
+    !OMNI_IO_PAUSE
+  # MD3 & !RXA0
+  # !MD6 & !MD7 & !RXA0
+  # !MD7 & MD8 & !RXA0
+  # !MD3 & RXA0
+  # !MD3 & !MD6 & !MD7
+  # !MD3 & !MD7 & MD8
+  # MD4
+  # MD5
+  # MD6 & RXA0
+  # MD3 & MD6
+  # MD6 & MD8
+  # MD6 & MD7
+  # MD7 & RXA0
+  # MD3 & MD7
+  # MD7 & !MD8
+  # !MD6 & !MD8 & !RXA0
+  # !MD3 & !MD6 & !MD8
+
+INT_EN.d  =>
+    !DATA11
+
+INT_EN.ar  =>
+    INIT
+
+INT_EN.ck  =>
+    !MD3 & !MD4 & !MD5 & !MD6 & MD7 & MD8 & MD9 & !MD10 & MD11 & OMNI_IO_PAUSE & !RXA0 & TP3
+  # MD3 & !MD4 & !MD5 & !MD6 & !MD7 & !MD8 & MD9 & !MD10 & MD11 & OMNI_IO_PAUSE & RXA0 & TP3
+
+INT_RQST =>
+    !INT_EN
+  # !RX_FLAG & !TX_FLAG
+
+LED0.d  =>
+    0 
+
+LED0.ap  =>
+    INT_EN
+
+LED0.ar  =>
+    INIT
+
+LED0.ck  =>
+    ILC0 & ILC1 & ILC2 & ILC3
+
+LED1.d  =>
+    0 
+
+LED1.ap  =>
+    TS2
+
+LED1.ar  =>
+    INIT
+
+LED1.ck  =>
+    TLC0 & TLC1 & TLC2 & TLC3
+
+LED2.d  =>
+    0 
+
+LED2.ap  =>
+    RS2
+
+LED2.ar  =>
+    INIT
+
+LED2.ck  =>
+    RLC0 & RLC1 & RLC2 & RLC3
+
+RC0.t  =>
+    1 
+
+RC0.ar  =>
+    RS0
+  # CNTR_START
+
+RC0.ce  =>
+    1 
+
+RC0.ck  =>
+    CLK
+
+RC1.t  =>
+    RC0
+
+RC1.ar  =>
+    RS0
+  # CNTR_START
+
+RC1.ce  =>
+    1 
+
+RC1.ck  =>
+    CLK
+
+RC2.t  =>
+    RC0 & RC1
+
+RC2.ar  =>
+    RS0
+  # CNTR_START
+
+RC2.ce  =>
+    1 
+
+RC2.ck  =>
+    CLK
+
+RC3.t  =>
+    RC0 & RC1 & RC2
+
+RC3.ar  =>
+    RS0
+  # CNTR_START
+
+RC3.ce  =>
+    1 
+
+RC3.ck  =>
+    CLK
+
+RDRRUN.d  =>
+    0 
+
+RDRRUN.ap  =>
+    !MD3 & !MD4 & !MD5 & !MD6 & MD7 & MD8 & MD10 & !MD11 & OMNI_IO_PAUSE & !RXA0 & TP3
+  # MD3 & !MD4 & !MD5 & !MD6 & !MD7 & !MD8 & MD10 & !MD11 & OMNI_IO_PAUSE & RXA0 & TP3
+
+RDRRUN.ar  =>
+    INIT
+
+RDRRUN.ck  =>
+    RS2
+
+RLC0.t  =>
+    1 
+
+RLC0.ar  =>
+    INIT
+  # RS2
+
+RLC0.ce  =>
+    1 
+
+RLC0.ck  =>
+    !TCK0 & !TCK1 & !TCK2 & !TCK3 & !TCK4 & !TCK5 & !TCK6 & !TCK7 & !TCK8 & !TCK9 & !TCK10 & !TCK11 & !TCK12 & !TCK13
+
+RLC1.t  =>
+    RLC0
+
+RLC1.ar  =>
+    INIT
+  # RS2
+
+RLC1.ce  =>
+    1 
+
+RLC1.ck  =>
+    !TCK0 & !TCK1 & !TCK2 & !TCK3 & !TCK4 & !TCK5 & !TCK6 & !TCK7 & !TCK8 & !TCK9 & !TCK10 & !TCK11 & !TCK12 & !TCK13
+
+RLC2.t  =>
+    RLC0 & RLC1
+
+RLC2.ar  =>
+    INIT
+  # RS2
+
+RLC2.ce  =>
+    1 
+
+RLC2.ck  =>
+    !TCK0 & !TCK1 & !TCK2 & !TCK3 & !TCK4 & !TCK5 & !TCK6 & !TCK7 & !TCK8 & !TCK9 & !TCK10 & !TCK11 & !TCK12 & !TCK13
+
+RLC3.t  =>
+    RLC0 & RLC1 & RLC2
+
+RLC3.ar  =>
+    INIT
+  # RS2
+
+RLC3.ce  =>
+    1 
+
+RLC3.ck  =>
+    !TCK0 & !TCK1 & !TCK2 & !TCK3 & !TCK4 & !TCK5 & !TCK6 & !TCK7 & !TCK8 & !TCK9 & !TCK10 & !TCK11 & !TCK12 & !TCK13
+
+RLC_FULL =>
+    RLC0 & RLC1 & RLC2 & RLC3
+
+RS0.d  =>
+    !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11
+  # RC0 & RC1 & RC2 & RC3 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & RS11
+  # RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11 & UART_RX
+  # !RS0 & RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11 & UART_RX
+
+RS0.ck  =>
+    CLK
+
+RS1.d  =>
+    !RC0 & !RS0 & RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11 & !UART_RX
+  # RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11 & !UART_RX
+  # RC3 & !RS0 & RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11 & !UART_RX
+  # !RC2 & !RS0 & RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11 & !UART_RX
+  # !RC1 & !RS0 & RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11 & !UART_RX
+
+RS1.ck  =>
+    CLK
+
+RS2.d  =>
+    !RC1 & !RS0 & !RS1 & RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11
+  # RC0 & RC1 & RC2 & !RC3 & !RS0 & RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11
+  # !RC3 & !RS0 & !RS1 & RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11
+  # !RC2 & !RS0 & !RS1 & RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11
+  # !RC0 & !RS0 & !RS1 & RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11
+
+RS2.ck  =>
+    CLK
+
+RS3.d  =>
+    !RC1 & !RS0 & !RS1 & !RS2 & RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11
+  # RC0 & RC1 & RC2 & RC3 & !RS0 & !RS1 & RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11
+  # !RC3 & !RS0 & !RS1 & !RS2 & RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11
+  # !RC2 & !RS0 & !RS1 & !RS2 & RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11
+  # !RC0 & !RS0 & !RS1 & !RS2 & RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11
+
+RS3.ck  =>
+    CLK
+
+RS4.d  =>
+    !RC1 & !RS0 & !RS1 & !RS2 & !RS3 & RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11
+  # RC0 & RC1 & RC2 & RC3 & !RS0 & !RS1 & !RS2 & RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11
+  # !RC3 & !RS0 & !RS1 & !RS2 & !RS3 & RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11
+  # !RC2 & !RS0 & !RS1 & !RS2 & !RS3 & RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11
+  # !RC0 & !RS0 & !RS1 & !RS2 & !RS3 & RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11
+
+RS4.ck  =>
+    CLK
+
+RS5.d  =>
+    !RC1 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11
+  # RC0 & RC1 & RC2 & RC3 & !RS0 & !RS1 & !RS2 & !RS3 & RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11
+  # !RC3 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11
+  # !RC2 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11
+  # !RC0 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11
+
+RS5.ck  =>
+    CLK
+
+RS6.d  =>
+    !RC1 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11
+  # RC0 & RC1 & RC2 & RC3 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11
+  # !RC3 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11
+  # !RC2 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11
+  # !RC0 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11
+
+RS6.ck  =>
+    CLK
+
+RS7.d  =>
+    !RC1 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & RS7 & !RS8 & !RS9 & !RS10 & !RS11
+  # RC0 & RC1 & RC2 & RC3 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & RS6 & !RS7 & !RS8 & !RS9 & !RS10 & !RS11
+  # !RC3 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & RS7 & !RS8 & !RS9 & !RS10 & !RS11
+  # !RC2 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & RS7 & !RS8 & !RS9 & !RS10 & !RS11
+  # !RC0 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & RS7 & !RS8 & !RS9 & !RS10 & !RS11
+
+RS7.ck  =>
+    CLK
+
+RS8.d  =>
+    !RC1 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & RS8 & !RS9 & !RS10 & !RS11
+  # RC0 & RC1 & RC2 & RC3 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & RS7 & !RS8 & !RS9 & !RS10 & !RS11
+  # !RC3 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & RS8 & !RS9 & !RS10 & !RS11
+  # !RC2 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & RS8 & !RS9 & !RS10 & !RS11
+  # !RC0 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & RS8 & !RS9 & !RS10 & !RS11
+
+RS8.ck  =>
+    CLK
+
+RS9.d  =>
+    !RC1 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & RS9 & !RS10 & !RS11
+  # RC0 & RC1 & RC2 & RC3 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & RS8 & !RS9 & !RS10 & !RS11
+  # !RC3 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & RS9 & !RS10 & !RS11
+  # !RC2 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & RS9 & !RS10 & !RS11
+  # !RC0 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & RS9 & !RS10 & !RS11
+
+RS9.ck  =>
+    CLK
+
+RS10.d  =>
+    !RC1 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & RS10 & !RS11
+  # RC0 & RC1 & RC2 & RC3 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & RS9 & !RS10 & !RS11
+  # !RC3 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & RS10 & !RS11
+  # !RC2 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & RS10 & !RS11
+  # !RC0 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & RS10 & !RS11
+
+RS10.ck  =>
+    CLK
+
+RS11.d  =>
+    !RC1 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & RS11
+  # RC0 & RC1 & RC2 & RC3 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & RS10 & !RS11
+  # !RC3 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & RS11
+  # !RC2 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & RS11
+  # !RC0 & !RS0 & !RS1 & !RS2 & !RS3 & !RS4 & !RS5 & !RS6 & !RS7 & !RS8 & !RS9 & !RS10 & RS11
+
+RS11.ck  =>
+    CLK
+
+RSR0.d  =>
+    UART_RX
+
+RSR0.ar  =>
+    0 
+
+RSR0.ce  =>
+    1 
+
+RSR0.ck  =>
+    RS3
+
+RSR1.d  =>
+    UART_RX
+
+RSR1.ar  =>
+    0 
+
+RSR1.ce  =>
+    1 
+
+RSR1.ck  =>
+    RS4
+
+RSR2.d  =>
+    UART_RX
+
+RSR2.ar  =>
+    0 
+
+RSR2.ce  =>
+    1 
+
+RSR2.ck  =>
+    RS5
+
+RSR3.d  =>
+    UART_RX
+
+RSR3.ar  =>
+    0 
+
+RSR3.ce  =>
+    1 
+
+RSR3.ck  =>
+    RS6
+
+RSR4.d  =>
+    UART_RX
+
+RSR4.ar  =>
+    0 
+
+RSR4.ce  =>
+    1 
+
+RSR4.ck  =>
+    RS7
+
+RSR5.d  =>
+    UART_RX
+
+RSR5.ar  =>
+    0 
+
+RSR5.ce  =>
+    1 
+
+RSR5.ck  =>
+    RS8
+
+RSR6.d  =>
+    UART_RX
+
+RSR6.ar  =>
+    0 
+
+RSR6.ce  =>
+    1 
+
+RSR6.ck  =>
+    RS9
+
+RSR7.d  =>
+    UART_RX
+
+RSR7.ar  =>
+    0 
+
+RSR7.ce  =>
+    1 
+
+RSR7.ck  =>
+    RS10
+
+RX_ADRS =>
+    MD3 & !MD4 & !MD5 & !MD6 & !MD7 & !MD8 & OMNI_IO_PAUSE & RXA0
+  # !MD3 & !MD4 & !MD5 & !MD6 & MD7 & MD8 & OMNI_IO_PAUSE & !RXA0
+
+RX_BIT_FULL =>
+    RC0 & RC1 & RC2 & RC3
+
+RX_BIT_HALF =>
+    RC0 & RC1 & RC2 & !RC3
+
+RX_FLAG.d  =>
+    1 
+
+RX_FLAG.ar  =>
+    !MD3 & !MD4 & !MD5 & !MD6 & MD7 & MD8 & !MD9 & !MD10 & !MD11 & OMNI_IO_PAUSE & !RXA0 & TP3
+  # MD3 & !MD4 & !MD5 & !MD6 & !MD7 & !MD8 & !MD9 & !MD10 & !MD11 & OMNI_IO_PAUSE & RXA0 & TP3
+  # !MD3 & !MD4 & !MD5 & !MD6 & MD7 & MD8 & MD10 & !MD11 & OMNI_IO_PAUSE & !RXA0 & TP3
+  # MD3 & !MD4 & !MD5 & !MD6 & !MD7 & !MD8 & MD10 & !MD11 & OMNI_IO_PAUSE & RXA0 & TP3
+  # INIT
+
+RX_FLAG.ck  =>
+    RS11
+
+SKIP =>
+    !MD7 & !MD9 & !RXA0 & !TX_FLAG
+  # !MD8 & !MD9 & !RXA0 & !TX_FLAG
+  # !MD3 & !MD7 & !MD9 & !TX_FLAG
+  # !MD3 & !MD8 & !MD9 & !TX_FLAG
+  # MD6 & !MD9 & !TX_FLAG
+  # MD8 & !MD9 & RXA0 & !TX_FLAG
+  # !MD7 & MD8 & !MD9 & !TX_FLAG
+  # MD3 & MD8 & !MD9 & !TX_FLAG
+  # MD10
+  # !MD11
+  # !RX_FLAG & !TX_FLAG
+  # !INT_EN & MD9
+  # !INT_EN & !MD7 & !RXA0 & !TX_FLAG
+  # !INT_EN & !MD8 & !RXA0 & !TX_FLAG
+  # !INT_EN & !MD3 & !MD7 & !TX_FLAG
+  # !INT_EN & !MD3 & !MD8 & !TX_FLAG
+  # !INT_EN & MD6 & !TX_FLAG
+  # !INT_EN & MD8 & RXA0 & !TX_FLAG
+  # !INT_EN & !MD7 & MD8 & !TX_FLAG
+  # !INT_EN & MD3 & MD8 & !TX_FLAG
+  # !OMNI_IO_PAUSE
+  # MD3 & !RXA0
+  # !MD6 & MD9 & !RXA0
+  # !MD6 & !RXA0 & !RX_FLAG
+  # !MD6 & !MD7 & !RXA0
+  # MD8 & MD9 & !RXA0
+  # MD8 & !RXA0 & !RX_FLAG
+  # !MD7 & MD8 & !RXA0
+  # !MD3 & RXA0
+  # !MD3 & !MD6 & MD9
+  # !MD3 & !MD6 & !RX_FLAG
+  # !MD3 & !MD6 & !MD7
+  # !MD3 & MD8 & MD9
+  # !MD3 & MD8 & !RX_FLAG
+  # !MD3 & !MD7 & MD8
+  # MD4
+  # MD5
+  # MD6 & RXA0
+  # MD3 & MD6
+  # MD6 & MD8
+  # MD7 & MD9
+  # MD7 & !RX_FLAG
+  # MD6 & MD7
+  # MD7 & RXA0
+  # MD3 & MD7
+  # MD7 & !MD8
+  # !MD8 & MD9 & RXA0
+  # !MD8 & RXA0 & !RX_FLAG
+  # MD3 & !MD8 & MD9
+  # MD3 & !MD8 & !RX_FLAG
+  # !MD6 & !MD8 & MD9
+  # !MD6 & !MD8 & !RX_FLAG
+  # !MD6 & !MD8 & !RXA0
+  # !MD3 & !MD6 & !MD8
+
+STROBE.d  =>
+    0 
+
+STROBE.ap  =>
+    !MD3 & !MD4 & !MD5 & MD6 & !MD7 & !MD8 & MD9 & !MD11 & OMNI_IO_PAUSE & !RXA0 & TP3
+  # MD3 & !MD4 & !MD5 & !MD6 & !MD7 & MD8 & MD9 & !MD11 & OMNI_IO_PAUSE & RXA0 & TP3
+
+STROBE.ar  =>
+    INIT
+
+STROBE.ck  =>
+    TS2
+
+TC0.t  =>
+    1 
+
+TC0.ar  =>
+    TS0
+
+TC0.ce  =>
+    1 
+
+TC0.ck  =>
+    CLK
+
+TC1.t  =>
+    TC0
+
+TC1.ar  =>
+    TS0
+
+TC1.ce  =>
+    1 
+
+TC1.ck  =>
+    CLK
+
+TC2.t  =>
+    TC0 & TC1
+
+TC2.ar  =>
+    TS0
+
+TC2.ce  =>
+    1 
+
+TC2.ck  =>
+    CLK
+
+TC3.t  =>
+    TC0 & TC1 & TC2
+
+TC3.ar  =>
+    TS0
+
+TC3.ce  =>
+    1 
+
+TC3.ck  =>
+    CLK
+
+TCK0.t  =>
+    1 
+
+TCK0.ar  =>
+    !TCK0 & !TCK1 & !TCK2 & !TCK3 & !TCK4 & !TCK5 & !TCK6 & !TCK7 & !TCK8 & !TCK9 & !TCK10 & !TCK11 & TCK12 & TCK13
+  # INIT
+
+TCK0.ce  =>
+    1 
+
+TCK0.ck  =>
+    CLK
+
+TCK1.t  =>
+    TCK0
+
+TCK1.ar  =>
+    !TCK0 & !TCK1 & !TCK2 & !TCK3 & !TCK4 & !TCK5 & !TCK6 & !TCK7 & !TCK8 & !TCK9 & !TCK10 & !TCK11 & TCK12 & TCK13
+  # INIT
+
+TCK1.ce  =>
+    1 
+
+TCK1.ck  =>
+    CLK
+
+TCK2.t  =>
+    TCK0 & TCK1
+
+TCK2.ar  =>
+    !TCK0 & !TCK1 & !TCK2 & !TCK3 & !TCK4 & !TCK5 & !TCK6 & !TCK7 & !TCK8 & !TCK9 & !TCK10 & !TCK11 & TCK12 & TCK13
+  # INIT
+
+TCK2.ce  =>
+    1 
+
+TCK2.ck  =>
+    CLK
+
+TCK3.t  =>
+    TCK0 & TCK1 & TCK2
+
+TCK3.ar  =>
+    !TCK0 & !TCK1 & !TCK2 & !TCK3 & !TCK4 & !TCK5 & !TCK6 & !TCK7 & !TCK8 & !TCK9 & !TCK10 & !TCK11 & TCK12 & TCK13
+  # INIT
+
+TCK3.ce  =>
+    1 
+
+TCK3.ck  =>
+    CLK
+
+TCK4.t  =>
+    TCK0 & TCK1 & TCK2 & TCK3
+
+TCK4.ar  =>
+    !TCK0 & !TCK1 & !TCK2 & !TCK3 & !TCK4 & !TCK5 & !TCK6 & !TCK7 & !TCK8 & !TCK9 & !TCK10 & !TCK11 & TCK12 & TCK13
+  # INIT
+
+TCK4.ce  =>
+    1 
+
+TCK4.ck  =>
+    CLK
+
+TCK5.t  =>
+    TCK0 & TCK1 & TCK2 & TCK3 & TCK4
+
+TCK5.ar  =>
+    !TCK0 & !TCK1 & !TCK2 & !TCK3 & !TCK4 & !TCK5 & !TCK6 & !TCK7 & !TCK8 & !TCK9 & !TCK10 & !TCK11 & TCK12 & TCK13
+  # INIT
+
+TCK5.ce  =>
+    1 
+
+TCK5.ck  =>
+    CLK
+
+TCK6.t  =>
+    TCK0 & TCK1 & TCK2 & TCK3 & TCK4 & TCK5
+
+TCK6.ar  =>
+    !TCK0 & !TCK1 & !TCK2 & !TCK3 & !TCK4 & !TCK5 & !TCK6 & !TCK7 & !TCK8 & !TCK9 & !TCK10 & !TCK11 & TCK12 & TCK13
+  # INIT
+
+TCK6.ce  =>
+    1 
+
+TCK6.ck  =>
+    CLK
+
+TCK7.t  =>
+    TCK0 & TCK1 & TCK2 & TCK3 & TCK4 & TCK5 & TCK6
+
+TCK7.ar  =>
+    !TCK0 & !TCK1 & !TCK2 & !TCK3 & !TCK4 & !TCK5 & !TCK6 & !TCK7 & !TCK8 & !TCK9 & !TCK10 & !TCK11 & TCK12 & TCK13
+  # INIT
+
+TCK7.ce  =>
+    1 
+
+TCK7.ck  =>
+    CLK
+
+TCK8.t  =>
+    TCK0 & TCK1 & TCK2 & TCK3 & TCK4 & TCK5 & TCK6 & TCK7
+
+TCK8.ar  =>
+    !TCK0 & !TCK1 & !TCK2 & !TCK3 & !TCK4 & !TCK5 & !TCK6 & !TCK7 & !TCK8 & !TCK9 & !TCK10 & !TCK11 & TCK12 & TCK13
+  # INIT
+
+TCK8.ce  =>
+    1 
+
+TCK8.ck  =>
+    CLK
+
+TCK9.t  =>
+    TCK0 & TCK1 & TCK2 & TCK3 & TCK4 & TCK5 & TCK6 & TCK7 & TCK8
+
+TCK9.ar  =>
+    !TCK0 & !TCK1 & !TCK2 & !TCK3 & !TCK4 & !TCK5 & !TCK6 & !TCK7 & !TCK8 & !TCK9 & !TCK10 & !TCK11 & TCK12 & TCK13
+  # INIT
+
+TCK9.ce  =>
+    1 
+
+TCK9.ck  =>
+    CLK
+
+TCK10.t  =>
+    TCK0 & TCK1 & TCK2 & TCK3 & TCK4 & TCK5 & TCK6 & TCK7 & TCK8 & TCK9
+
+TCK10.ar  =>
+    !TCK0 & !TCK1 & !TCK2 & !TCK3 & !TCK4 & !TCK5 & !TCK6 & !TCK7 & !TCK8 & !TCK9 & !TCK10 & !TCK11 & TCK12 & TCK13
+  # INIT
+
+TCK10.ce  =>
+    1 
+
+TCK10.ck  =>
+    CLK
+
+TCK11.t  =>
+    TCK0 & TCK1 & TCK2 & TCK3 & TCK4 & TCK5 & TCK6 & TCK7 & TCK8 & TCK9 & TCK10
+
+TCK11.ar  =>
+    !TCK0 & !TCK1 & !TCK2 & !TCK3 & !TCK4 & !TCK5 & !TCK6 & !TCK7 & !TCK8 & !TCK9 & !TCK10 & !TCK11 & TCK12 & TCK13
+  # INIT
+
+TCK11.ce  =>
+    1 
+
+TCK11.ck  =>
+    CLK
+
+TCK12.t  =>
+    TCK0 & TCK1 & TCK2 & TCK3 & TCK4 & TCK5 & TCK6 & TCK7 & TCK8 & TCK9 & TCK10 & TCK11
+
+TCK12.ar  =>
+    !TCK0 & !TCK1 & !TCK2 & !TCK3 & !TCK4 & !TCK5 & !TCK6 & !TCK7 & !TCK8 & !TCK9 & !TCK10 & !TCK11 & TCK12 & TCK13
+  # INIT
+
+TCK12.ce  =>
+    1 
+
+TCK12.ck  =>
+    CLK
+
+TCK13.t  =>
+    TCK0 & TCK1 & TCK2 & TCK3 & TCK4 & TCK5 & TCK6 & TCK7 & TCK8 & TCK9 & TCK10 & TCK11 & TCK12
+
+TCK13.ar  =>
+    !TCK0 & !TCK1 & !TCK2 & !TCK3 & !TCK4 & !TCK5 & !TCK6 & !TCK7 & !TCK8 & !TCK9 & !TCK10 & !TCK11 & TCK12 & TCK13
+  # INIT
+
+TCK13.ce  =>
+    1 
+
+TCK13.ck  =>
+    CLK
+
+TICK_CLR =>
+    !TCK0 & !TCK1 & !TCK2 & !TCK3 & !TCK4 & !TCK5 & !TCK6 & !TCK7 & !TCK8 & !TCK9 & !TCK10 & !TCK11 & TCK12 & TCK13
+
+TICK_ROLL =>
+    !TCK0 & !TCK1 & !TCK2 & !TCK3 & !TCK4 & !TCK5 & !TCK6 & !TCK7 & !TCK8 & !TCK9 & !TCK10 & !TCK11 & !TCK12 & !TCK13
+
+TLC0.t  =>
+    1 
+
+TLC0.ar  =>
+    INIT
+  # TS2
+
+TLC0.ce  =>
+    1 
+
+TLC0.ck  =>
+    !TCK0 & !TCK1 & !TCK2 & !TCK3 & !TCK4 & !TCK5 & !TCK6 & !TCK7 & !TCK8 & !TCK9 & !TCK10 & !TCK11 & !TCK12 & !TCK13
+
+TLC1.t  =>
+    TLC0
+
+TLC1.ar  =>
+    INIT
+  # TS2
+
+TLC1.ce  =>
+    1 
+
+TLC1.ck  =>
+    !TCK0 & !TCK1 & !TCK2 & !TCK3 & !TCK4 & !TCK5 & !TCK6 & !TCK7 & !TCK8 & !TCK9 & !TCK10 & !TCK11 & !TCK12 & !TCK13
+
+TLC2.t  =>
+    TLC0 & TLC1
+
+TLC2.ar  =>
+    INIT
+  # TS2
+
+TLC2.ce  =>
+    1 
+
+TLC2.ck  =>
+    !TCK0 & !TCK1 & !TCK2 & !TCK3 & !TCK4 & !TCK5 & !TCK6 & !TCK7 & !TCK8 & !TCK9 & !TCK10 & !TCK11 & !TCK12 & !TCK13
+
+TLC3.t  =>
+    TLC0 & TLC1 & TLC2
+
+TLC3.ar  =>
+    INIT
+  # TS2
+
+TLC3.ce  =>
+    1 
+
+TLC3.ck  =>
+    !TCK0 & !TCK1 & !TCK2 & !TCK3 & !TCK4 & !TCK5 & !TCK6 & !TCK7 & !TCK8 & !TCK9 & !TCK10 & !TCK11 & !TCK12 & !TCK13
+
+TLC_FULL =>
+    TLC0 & TLC1 & TLC2 & TLC3
+
+TS0.d  =>
+    !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # TC0 & TC1 & TC2 & TC3 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & TS11
+  # !STROBE & TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+
+TS0.ck  =>
+    CLK
+
+TS1.d  =>
+    !TC1 & !TS0 & TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # STROBE & TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # !TC3 & !TS0 & TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # !TC2 & !TS0 & TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # !TC0 & !TS0 & TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+
+TS1.ck  =>
+    CLK
+
+TS2.d  =>
+    !TC1 & !TS0 & !TS1 & TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # TC0 & TC1 & TC2 & TC3 & !TS0 & TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # !TC3 & !TS0 & !TS1 & TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # !TC2 & !TS0 & !TS1 & TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # !TC0 & !TS0 & !TS1 & TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+
+TS2.ck  =>
+    CLK
+
+TS3.d  =>
+    !TC1 & !TS0 & !TS1 & !TS2 & TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # TC0 & TC1 & TC2 & TC3 & !TS0 & !TS1 & TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # !TC3 & !TS0 & !TS1 & !TS2 & TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # !TC2 & !TS0 & !TS1 & !TS2 & TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # !TC0 & !TS0 & !TS1 & !TS2 & TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+
+TS3.ck  =>
+    CLK
+
+TS4.d  =>
+    !TC1 & !TS0 & !TS1 & !TS2 & !TS3 & TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # TC0 & TC1 & TC2 & TC3 & !TS0 & !TS1 & !TS2 & TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # !TC3 & !TS0 & !TS1 & !TS2 & !TS3 & TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # !TC2 & !TS0 & !TS1 & !TS2 & !TS3 & TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # !TC0 & !TS0 & !TS1 & !TS2 & !TS3 & TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+
+TS4.ck  =>
+    CLK
+
+TS5.d  =>
+    !TC1 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # TC0 & TC1 & TC2 & TC3 & !TS0 & !TS1 & !TS2 & !TS3 & TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # !TC3 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # !TC2 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # !TC0 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+
+TS5.ck  =>
+    CLK
+
+TS6.d  =>
+    !TC1 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # TC0 & TC1 & TC2 & TC3 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # !TC3 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # !TC2 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # !TC0 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+
+TS6.ck  =>
+    CLK
+
+TS7.d  =>
+    !TC1 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # TC0 & TC1 & TC2 & TC3 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & TS6 & !TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # !TC3 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # !TC2 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # !TC0 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & TS7 & !TS8 & !TS9 & !TS10 & !TS11
+
+TS7.ck  =>
+    CLK
+
+TS8.d  =>
+    !TC1 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & TS8 & !TS9 & !TS10 & !TS11
+  # TC0 & TC1 & TC2 & TC3 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & TS7 & !TS8 & !TS9 & !TS10 & !TS11
+  # !TC3 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & TS8 & !TS9 & !TS10 & !TS11
+  # !TC2 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & TS8 & !TS9 & !TS10 & !TS11
+  # !TC0 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & TS8 & !TS9 & !TS10 & !TS11
+
+TS8.ck  =>
+    CLK
+
+TS9.d  =>
+    !TC1 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & TS9 & !TS10 & !TS11
+  # TC0 & TC1 & TC2 & TC3 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & TS8 & !TS9 & !TS10 & !TS11
+  # !TC3 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & TS9 & !TS10 & !TS11
+  # !TC2 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & TS9 & !TS10 & !TS11
+  # !TC0 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & TS9 & !TS10 & !TS11
+
+TS9.ck  =>
+    CLK
+
+TS10.d  =>
+    !TC1 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & TS10 & !TS11
+  # TC0 & TC1 & TC2 & TC3 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & TS9 & !TS10 & !TS11
+  # !TC3 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & TS10 & !TS11
+  # !TC2 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & TS10 & !TS11
+  # !TC0 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & TS10 & !TS11
+
+TS10.ck  =>
+    CLK
+
+TS11.d  =>
+    !TC1 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & TS11
+  # TC0 & TC1 & TC2 & TC3 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & TS10 & !TS11
+  # !TC3 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & TS11
+  # !TC2 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & TS11
+  # !TC0 & !TS0 & !TS1 & !TS2 & !TS3 & !TS4 & !TS5 & !TS6 & !TS7 & !TS8 & !TS9 & !TS10 & TS11
+
+TS11.ck  =>
+    CLK
+
+TSR0.d  =>
+    !DATA11.io 
+
+TSR0.ar  =>
+    0 
+
+TSR0.ck  =>
+    STROBE
+
+TSR1.d  =>
+    !DATA10.io 
+
+TSR1.ar  =>
+    0 
+
+TSR1.ck  =>
+    STROBE
+
+TSR2.d  =>
+    !DATA9.io 
+
+TSR2.ar  =>
+    0 
+
+TSR2.ck  =>
+    STROBE
+
+TSR3.d  =>
+    !DATA8.io 
+
+TSR3.ar  =>
+    0 
+
+TSR3.ck  =>
+    STROBE
+
+TSR4.d  =>
+    !DATA7.io 
+
+TSR4.ar  =>
+    0 
+
+TSR4.ck  =>
+    STROBE
+
+TSR5.d  =>
+    !DATA6.io 
+
+TSR5.ar  =>
+    0 
+
+TSR5.ck  =>
+    STROBE
+
+TSR6.d  =>
+    !DATA5.io 
+
+TSR6.ar  =>
+    0 
+
+TSR6.ck  =>
+    STROBE
+
+TSR7.d  =>
+    !DATA4.io 
+
+TSR7.ar  =>
+    0 
+
+TSR7.ck  =>
+    STROBE
+
+TX_ADRS =>
+    MD3 & !MD4 & !MD5 & !MD6 & !MD7 & MD8 & OMNI_IO_PAUSE & RXA0
+  # !MD3 & !MD4 & !MD5 & MD6 & !MD7 & !MD8 & OMNI_IO_PAUSE & !RXA0
+
+TX_BIT_FULL =>
+    TC0 & TC1 & TC2 & TC3
+
+TX_FLAG.d  =>
+    1 
+
+TX_FLAG.ap  =>
+    !MD3 & !MD4 & !MD5 & MD6 & !MD7 & !MD8 & !MD9 & !MD10 & !MD11 & OMNI_IO_PAUSE & !RXA0 & TP3
+  # MD3 & !MD4 & !MD5 & !MD6 & !MD7 & MD8 & !MD9 & !MD10 & !MD11 & OMNI_IO_PAUSE & RXA0 & TP3
+
+TX_FLAG.ar  =>
+    !MD3 & !MD4 & !MD5 & MD6 & !MD7 & !MD8 & MD10 & !MD11 & OMNI_IO_PAUSE & !RXA0 & TP3
+  # MD3 & !MD4 & !MD5 & !MD6 & !MD7 & MD8 & MD10 & !MD11 & OMNI_IO_PAUSE & RXA0 & TP3
+  # INIT
+
+TX_FLAG.ck  =>
+    TS10
+
+UART_RX_D1.d  =>
+    UART_RX
+
+UART_RX_D1.ar  =>
+    0 
+
+UART_RX_D1.ce  =>
+    1 
+
+UART_RX_D1.ck  =>
+    CLK
+
+UART_TX =>
+    TS0
+  # TS2 & TSR0
+  # TS3 & TSR1
+  # TS4 & TSR2
+  # TS5 & TSR3
+  # TS6 & TSR4
+  # TS7 & TSR5
+  # TS8 & TSR6
+  # TS9 & TSR7
+  # TS10
+  # TS11
+
+%END

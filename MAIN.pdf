@@ -1,0 +1,389 @@
+{COMPONENT C:\USERS\MALCOLM\ONEDRIVE\OMNIBUS-SERIAL-BOARD\CUPL-FILES\MAIN.SYM
+
+ {ENVIRONMENT
+  {PDIFvrev 3.00}
+  {Program "CUPL(WM) Version 5.0a"}
+  {DBtype "Schematic"}
+  {DBvrev 1.01}
+  {DBtime "Tue Sep 27 23:36:55 2016 "}
+  {DBunit "MIL"}
+  {DBgrid 10}
+  {Lyrstr "WIRES" 1 "BUS" 1 "GATE" 2 "IEEE" 2 "PINFUN" 3 "PINNUM" 1 
+          "PINNAM" 6 "PINCON" 4 "REFDES" 2 "ATTR" 6 "SDOT" 1 
+          "DEVICE" 5 "OUTLIN" 5 "ATTR2" 6 "NOTES" 6 "NETNAM" 4 
+          "CMPNAM" 5 "BORDER" 5}
+ }
+
+ {USER
+  {VIEW
+   {Mode SYMB}
+   {Nlst OPEN}
+   {Vw 0 0 2}
+   {Lv 12 2 2 2 0 0 2 2 2 2 0 0 2 1 2 0 0 0 0}
+   {Gs 10 10}
+  }
+ }
+
+ {DISPLAY
+  [Ly "PINNUM"]
+  [Ls "SOLID"][Wd 0]
+  [Ts 15][Tj "LC"][Tr 0][Tm "N"]
+ }
+
+ {SYMBOL
+  {PIN_DEF
+   [Ly "PINCON"]
+   {P UART_RX {Pt "INPUT"}{Lq 0}{Ploc 100 820}}
+   {P RXA1' {Pt "INPUT"}{Lq 0}{Ploc 100 800}}
+   {P RXA0' {Pt "INPUT"}{Lq 0}{Ploc 100 780}}
+   {P RXA2' {Pt "INPUT"}{Lq 0}{Ploc 100 760}}
+   {P RXA3' {Pt "INPUT"}{Lq 0}{Ploc 100 740}}
+   {P RXA4' {Pt "INPUT"}{Lq 0}{Ploc 100 720}}
+   {P RXA5' {Pt "INPUT"}{Lq 0}{Ploc 100 700}}
+   {P DATA11 {Pt "INPUT"}{Lq 0}{Ploc 100 680}}
+   {P DATA10 {Pt "INPUT"}{Lq 0}{Ploc 100 660}}
+   {P DATA8 {Pt "INPUT"}{Lq 0}{Ploc 100 640}}
+   {P DATA9 {Pt "INPUT"}{Lq 0}{Ploc 100 620}}
+   {P MD11' {Pt "INPUT"}{Lq 0}{Ploc 100 600}}
+   {P MD10' {Pt "INPUT"}{Lq 0}{Ploc 100 580}}
+   {P MD9' {Pt "INPUT"}{Lq 0}{Ploc 100 560}}
+   {P MD8' {Pt "INPUT"}{Lq 0}{Ploc 100 540}}
+   {P INIT {Pt "INPUT"}{Lq 0}{Ploc 100 520}}
+   {P TP3 {Pt "INPUT"}{Lq 0}{Ploc 100 500}}
+   {P OMNI_IO_' {Pt "INPUT"}{Lq 0}{Ploc 100 480}}
+   {P DATA6 {Pt "INPUT"}{Lq 0}{Ploc 100 460}}
+   {P DATA7 {Pt "INPUT"}{Lq 0}{Ploc 100 440}}
+   {P DATA5 {Pt "INPUT"}{Lq 0}{Ploc 100 420}}
+   {P MD7' {Pt "INPUT"}{Lq 0}{Ploc 100 400}}
+   {P DATA4 {Pt "INPUT"}{Lq 0}{Ploc 100 380}}
+   {P MD5' {Pt "INPUT"}{Lq 0}{Ploc 100 360}}
+   {P MD6' {Pt "INPUT"}{Lq 0}{Ploc 100 340}}
+   {P DATA3 {Pt "INPUT"}{Lq 0}{Ploc 100 320}}
+   {P MD4' {Pt "INPUT"}{Lq 0}{Ploc 100 300}}
+   {P DATA1 {Pt "INPUT"}{Lq 0}{Ploc 100 280}}
+   {P DATA2 {Pt "INPUT"}{Lq 0}{Ploc 100 260}}
+   {P MD3' {Pt "INPUT"}{Lq 0}{Ploc 100 240}}
+   {P DATA0 {Pt "INPUT"}{Lq 0}{Ploc 100 220}}
+   {P TXA0' {Pt "INPUT"}{Lq 0}{Ploc 100 200}}
+   {P TXA1' {Pt "INPUT"}{Lq 0}{Ploc 100 180}}
+   {P TXA2' {Pt "INPUT"}{Lq 0}{Ploc 100 160}}
+   {P TXA3' {Pt "INPUT"}{Lq 0}{Ploc 100 140}}
+   {P TXA4' {Pt "INPUT"}{Lq 0}{Ploc 100 120}}
+   {P LED1 {Pt "INPUT"}{Lq 0}{Ploc 100 100}}
+   {P TXA5' {Pt "INPUT"}{Lq 0}{Ploc 100 80}}
+   {P LED2 {Pt "INPUT"}{Lq 0}{Ploc 100 60}}
+   {P LED0 {Pt "INPUT"}{Lq 0}{Ploc 100 40}}
+   {P CLK {Pt "INPUT"}{Lq 0}{Ploc 100 20}}
+   {P UART_TX {Pt "I/O"}{Lq 0}{Ploc 360 20}}
+   {P SKIP {Pt "I/O"}{Lq 0}{Ploc 360 40}}
+   {P INT_RQST {Pt "I/O"}{Lq 0}{Ploc 360 60}}
+   {P INTERNAL {Pt "I/O"}{Lq 0}{Ploc 360 80}}
+   {P C1 {Pt "I/O"}{Lq 0}{Ploc 360 100}}
+   {P C0 {Pt "I/O"}{Lq 0}{Ploc 360 120}}
+  }
+
+  {PKG
+   [Ly "REFDES"]
+   [Ts 25][Tj "CB"][Tr 0][Tm "N"]
+   {Rdl 230 850}
+
+   [Ly "PINNUM"]
+   [Ts 15][Tj "RC"]
+   {Pnl 120 830}
+   {Pnl 120 810}
+   {Pnl 120 790}
+   {Pnl 120 770}
+   {Pnl 120 750}
+   {Pnl 120 730}
+   {Pnl 120 710}
+   {Pnl 120 690}
+   {Pnl 120 670}
+   {Pnl 120 650}
+   {Pnl 120 630}
+   {Pnl 120 610}
+   {Pnl 120 590}
+   {Pnl 120 570}
+   {Pnl 120 550}
+   {Pnl 120 530}
+   {Pnl 120 510}
+   {Pnl 120 490}
+   {Pnl 120 470}
+   {Pnl 120 450}
+   {Pnl 120 430}
+   {Pnl 120 410}
+   {Pnl 120 390}
+   {Pnl 120 370}
+   {Pnl 120 350}
+   {Pnl 120 330}
+   {Pnl 120 310}
+   {Pnl 120 290}
+   {Pnl 120 270}
+   {Pnl 120 250}
+   {Pnl 120 230}
+   {Pnl 120 210}
+   {Pnl 120 190}
+   {Pnl 120 170}
+   {Pnl 120 150}
+   {Pnl 120 130}
+   {Pnl 120 110}
+   {Pnl 120 90}
+   {Pnl 120 70}
+   {Pnl 120 50}
+   {Pnl 120 30}
+   [Ts 15][Tj "LC"]
+   {Pnl 340 30}
+   {Pnl 340 50}
+   {Pnl 340 70}
+   {Pnl 340 90}
+   {Pnl 340 110}
+   {Pnl 340 130}
+
+   {Sd A 9 10 12 15 16 17 18 21 22 24 25 27 28 29 30 33 40 41 45 46 48 49 50 51 52 54 55 56 57 58 65 67 68 69 70 73 75 76 77 79 81 11 31 34 36 37 39}
+  }
+
+  {PIC
+   [Ly "GATE"]
+   [Ts 15][Tj "LC"][Tr 0][Tm "N"]
+   {R 130 840 330 0}
+   {L 130 820 100 820}
+   {L 120 800 100 800}
+   {C 125 800 5}
+   {L 120 780 100 780}
+   {C 125 780 5}
+   {L 120 760 100 760}
+   {C 125 760 5}
+   {L 120 740 100 740}
+   {C 125 740 5}
+   {L 120 720 100 720}
+   {C 125 720 5}
+   {L 120 700 100 700}
+   {C 125 700 5}
+   {L 130 680 100 680}
+   {L 130 660 100 660}
+   {L 130 640 100 640}
+   {L 130 620 100 620}
+   {L 120 600 100 600}
+   {C 125 600 5}
+   {L 120 580 100 580}
+   {C 125 580 5}
+   {L 120 560 100 560}
+   {C 125 560 5}
+   {L 120 540 100 540}
+   {C 125 540 5}
+   {L 130 520 100 520}
+   {L 130 500 100 500}
+   {L 120 480 100 480}
+   {C 125 480 5}
+   {L 130 460 100 460}
+   {L 130 440 100 440}
+   {L 130 420 100 420}
+   {L 120 400 100 400}
+   {C 125 400 5}
+   {L 130 380 100 380}
+   {L 120 360 100 360}
+   {C 125 360 5}
+   {L 120 340 100 340}
+   {C 125 340 5}
+   {L 130 320 100 320}
+   {L 120 300 100 300}
+   {C 125 300 5}
+   {L 130 280 100 280}
+   {L 130 260 100 260}
+   {L 120 240 100 240}
+   {C 125 240 5}
+   {L 130 220 100 220}
+   {L 120 200 100 200}
+   {C 125 200 5}
+   {L 120 180 100 180}
+   {C 125 180 5}
+   {L 120 160 100 160}
+   {C 125 160 5}
+   {L 120 140 100 140}
+   {C 125 140 5}
+   {L 120 120 100 120}
+   {C 125 120 5}
+   {L 130 100 100 100}
+   {L 120 80 100 80}
+   {C 125 80 5}
+   {L 130 60 100 60}
+   {L 130 40 100 40}
+   {L 130 20 100 20}
+   {L 330 20 360 20}
+   {L 330 40 360 40}
+   {L 330 60 360 60}
+   {L 330 80 360 80}
+   {L 330 100 360 100}
+   {L 330 120 360 120}
+   [Ly "PINNAM"]
+   [Tj "LC"]
+   {T "UART_RX" 140 820}
+   {T "RXA1'" 140 800}
+   {T "RXA0'" 140 780}
+   {T "RXA2'" 140 760}
+   {T "RXA3'" 140 740}
+   {T "RXA4'" 140 720}
+   {T "RXA5'" 140 700}
+   {T "DATA11" 140 680}
+   {T "DATA10" 140 660}
+   {T "DATA8" 140 640}
+   {T "DATA9" 140 620}
+   {T "MD11'" 140 600}
+   {T "MD10'" 140 580}
+   {T "MD9'" 140 560}
+   {T "MD8'" 140 540}
+   {T "INIT" 140 520}
+   {T "TP3" 140 500}
+   {T "OMNI_IO_'" 140 480}
+   {T "DATA6" 140 460}
+   {T "DATA7" 140 440}
+   {T "DATA5" 140 420}
+   {T "MD7'" 140 400}
+   {T "DATA4" 140 380}
+   {T "MD5'" 140 360}
+   {T "MD6'" 140 340}
+   {T "DATA3" 140 320}
+   {T "MD4'" 140 300}
+   {T "DATA1" 140 280}
+   {T "DATA2" 140 260}
+   {T "MD3'" 140 240}
+   {T "DATA0" 140 220}
+   {T "TXA0'" 140 200}
+   {T "TXA1'" 140 180}
+   {T "TXA2'" 140 160}
+   {T "TXA3'" 140 140}
+   {T "TXA4'" 140 120}
+   {T "LED1" 140 100}
+   {T "TXA5'" 140 80}
+   {T "LED2" 140 60}
+   {T "LED0" 140 40}
+   {T "CLK" 140 20}
+   [Tj "RC"]
+   {T "UART_TX" 320 20}
+   {T "SKIP" 320 40}
+   {T "INT_RQST" 320 60}
+   {T "INTERNAL" 320 80}
+   {T "C1" 320 100}
+   {T "C0" 320 120}
+   [Ly "DEVICE"]
+   [Tj "CT"]
+   {T "F1508ISPPLCC84" 230 -10}
+  }
+
+  {ATR
+   {IN
+    {Org 100 20}
+    {Ty 255}
+   }
+   {EX
+    [Ly "ATTR2"]
+    [Ts 12][Tj "CT"][Tr 0][Tm "N"]
+    {At PLD C:\USERS\MALCOLM\ONEDRIVE\OMNIBUS-SERIAL-BOARD\CUPL-FILES\MAIN 230 840}
+   }
+  }
+ }
+
+ {DETAIL
+  {ANNOTATE
+  }
+
+  {NET_DEF
+   {N UART_RX
+   }
+   {N RXA1'
+   }
+   {N RXA0'
+   }
+   {N RXA2'
+   }
+   {N RXA3'
+   }
+   {N RXA4'
+   }
+   {N RXA5'
+   }
+   {N DATA11
+   }
+   {N DATA10
+   }
+   {N DATA8
+   }
+   {N DATA9
+   }
+   {N MD11'
+   }
+   {N MD10'
+   }
+   {N MD9'
+   }
+   {N MD8'
+   }
+   {N INIT
+   }
+   {N TP3
+   }
+   {N OMNI_IO_'
+   }
+   {N DATA6
+   }
+   {N DATA7
+   }
+   {N DATA5
+   }
+   {N MD7'
+   }
+   {N DATA4
+   }
+   {N MD5'
+   }
+   {N MD6'
+   }
+   {N DATA3
+   }
+   {N MD4'
+   }
+   {N DATA1
+   }
+   {N DATA2
+   }
+   {N MD3'
+   }
+   {N DATA0
+   }
+   {N TXA0'
+   }
+   {N TXA1'
+   }
+   {N TXA2'
+   }
+   {N TXA3'
+   }
+   {N TXA4'
+   }
+   {N LED1
+   }
+   {N TXA5'
+   }
+   {N LED2
+   }
+   {N LED0
+   }
+   {N CLK
+   }
+   {N UART_TX
+   }
+   {N SKIP
+   }
+   {N INT_RQST
+   }
+   {N INTERNAL
+   }
+   {N C1
+   }
+   {N C0
+   }
+  }
+
+  {SUBCOMP
+  }
+ }
+}
