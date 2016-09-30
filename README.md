@@ -1,5 +1,5 @@
 # omni-serial
-UART for PDP-9 Omnibus computers based on ATF1508AS CPLD
+UART for PDP-8 Omnibus computers based on ATF1508AS CPLD
 
 This project is a single-chip UART for a PDP-8 Omnibus machine (PDP-8/e, etc).
 
