@@ -1,0 +1,622 @@
+
+Name      pdpserial_main;
+
+Assembly  0001;
+Revision  P2 1.0;
+PartNo    U1 ATF1508AS;
+Device    f1508ispplcc84;
+
+Company   Retrotronics.org;
+Designer  Alan H.;
+Location  None;
+Date      September 2016;
+
+property ATMEL { jtag=on };
+PROPERTY ATMEL { preassign keep };
+PROPERTY ATMEL { TMS_pullup=on };
+PROPERTY ATMEL { TDI_pullup=on };
+/* PROPERTY ATMEL { pin_keep OFF }; */
+PROPERTY ATMEL { open_collector = DATA0, DATA1, DATA2, DATA3, DATA4, DATA5, 
+DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, INTERNAL_IO, C0, C1, SKIP, 
+INT_RQST };
+
+
+
+/*******************************************************************************
+
+Version: 03-OCT-2016.
+
+This code compiles without error in WinCupl V 5.30.4.
+
+Functionality:
+
+  1. The Device Code is selectable using Switches 4-6 of the "RX ADDR" bank of
+     dipswitches:
+       RX-SW4  RX-SW5  RX-SW6  Device Code (RX/TX)
+        OFF     OFF     OFF         Disabled
+        OFF     OFF      ON          03/04
+        OFF      ON     OFF          40/41
+        OFF      ON      ON          42/43
+         ON     OFF     OFF          44/45
+         ON     OFF      ON          46/47
+         ON      ON     OFF          34/35
+         ON      ON      ON          11/12
+  2. The Green LED (D3, LHS) lights when a character is being received.
+  3. The Yellow LED (D2, Centre) lights when a character is being transmitted.
+  4. The Red LED (D1, RHS) lights when interrupts are armed on this board.
+  5. The RX and TX LEDs are driven by level-triggered 100 mSec retrigerable
+     one-shots. The interrupt-enable LED is a simple indicator of instantaneous
+     status (no timer attached).
+  6. Baud rate is programmable as follows (be sure to set the FTDI to this
+     speed via the PC).
+       RX-SW1  RX-SW2  RX-SW3  BAUD RATE
+        OFF     OFF     OFF        110  (Note: The FTDI module won't do 110 Bd)
+        OFF     OFF      ON        300
+        OFF      ON     OFF        600
+        OFF      ON      ON       1200
+         ON     OFF     OFF       9600
+         ON     OFF      ON      38400
+         ON      ON     OFF     115200
+         ON      ON      ON     230400
+  7. The board requires a minimum of 0.5 stop bits on the receive side, and
+     sends two stop bits.
+
+It can:
+
+  * Operate as the Console for OS/8 at Device Code 03/04.
+  * Boot OS/8 via SerialDisk (at Device Code 40/41).
+  * Succesfully echo an ASCII file that is dumped to it from a PC running
+    TeraTerm at 230,400, when a character echo routine is running on the
+    PDP-8/e.
+
+Status:
+
+  * The board now appears to work OK - but requires further testing.
+  * The CPLD is now almost at full capacity. Time to start looking for some
+    efficiencies!
+
+Testing status:
+
+  * More robust testing is still required (eg with a fully loaded Omnibus).
+    All Opcodes are implemented, but not all have been tested.
+  * Testing results so far are as follows:
+  * The board boots SerialDisk fine at both 115,200 and 230,400 baud.
+  * The board works fine as an OS/8 System Console at 9,600 baud.
+  * Interrupt functionality has been tested at low throughput, including
+    single-stepping to check both TX and RX interrupts.
+  * Echo-test using flag polling works fine at all speeds (110 baud not checked
+    yet) when typing in a terminal emulator (Tera Term or PuTTY).
+  * Echo-test by dumping an ASCII file to the board using Tera Term also now
+    works. Previously it was failing because the TX routine required more clock
+    cycles that the RX side, resulting in TX overrun.
+
+A few things to check if the board is not working for you:
+
+  1. Remember to configure the FTDI UART (through the PC) to match the baud
+     rate selected on the CPLD board. Select Mark Parity, 7 Data Bits, 1 or 2
+     Stop Bits when using the board as an OS/8 console. For SerialDisk,
+     configure for No Parity, 8 Data Bits, 1 or 2 Stop Bits.
+  2. The FTDI UART comes in "FEMALE" and "MALE" versions. Physically these
+     appear to be identical.  The FEMALE/MALE designation only affects whether
+     Pins 2 and 3 are respectively TX or RX.  Change the "Pin 11" and "Pin 9"
+     lines below to suit the gender of the FTDI device installed in your board.
+  3. The FTDI UART does not support 110 Baud.
+
+Revision History:
+
+03-OCT-2016 (V01.01):
+  1. INT_EN now defaults to ON when INIT is activated on the Omnibus.
+  2. The INT_EN status LED (D0) no longer has a 100 mSec re-triggerable one
+     shot timer attached to it. Instead it just shows instantaneous status.
+     This was done to free up 5 macrocells.
+  3. Programmable baud rates added (110, 300, 600, 1200, 9600, 38400, 115200
+     and 230400).
+  4. TX and RX state machines are now 8 ticks per bit (formerly 16 ticks per
+     bit). This change was made to enable the board to be used at 230,400 baud
+	 without changing the oscillator frequency.
+  5. The RX state machine has been tuned so that all bits are now sampled as
+     close as possible to the nominal centre of the bit-time apperture. The
+	 maximum samploing error now is 12.5% of one bit time. Sampling lags the
+	 centre of the bit-time by 0 to 12.5% of one bit time. This has been
+	 verified by viewing the RSn strobes on a logic16 logic analyser.
+  6. The RX side now only waits for 0.5 stop bits, so will receive bytes from
+     a sender configured for 1.0, 1.5 or 2.0 stop bits.
+  7. The TX side now only sends 7/8 of a stop bit (before starting to send the
+     next TX byte). This change was necessary to enable the board to correctly
+	 echo-back an ASCII file that is dumped to the board. Sending a byte now
+	 consumes 79 "ticks" compared to the nominal 80 ticks. If a full stop bit
+	 is sent, the receiver will overrun the transmitter and the echoed text
+	 will be corrupted. The timing on the TX side was carefully studied on the
+	 logic analyser to confirm no other anomolies).
+  8. Various changes were made to the timing of flags and register loads.
+
+27-SEP-2016 (V01.00): Initial version.
+
+***************************************************************************************/
+
+
+/* MALE FTDI: TX = 9, RX = 11   */
+/* FEMALE FTDI: TX = 11, RX = 9 */
+
+Pin 11 = UART_TX;  /* Current configured for FEMALE FTDI */
+Pin 9 =  UART_RX;  /* Current configured for FEMALE FTDI */
+
+/* Pin 4 = UART_RX; */  /* Alternate UART */
+/* Pin 5 = UART_TX; */  /* Alternate UART */
+
+/* Dipswitches switch to GND (ON = 0V, OFF = 5V) */
+Pin 18 = !RXA5; /* Switch 1 of RX ADDR - Baud rate selection   */
+Pin 17 = !RXA4; /* Switch 2 of RX ADDR - Baud rate selection   */
+Pin 16 = !RXA3; /* Switch 3 of RX ADDR - Baud rate selection   */
+Pin 15 = !RXA2; /* Switch 4 of RX ADDR - Device Code selection */
+Pin 10 = !RXA1; /* Switch 5 of RX ADDR - Device Code selection */
+Pin 12 = !RXA0; /* Switch 6 of RX ADDR - Device Code selection */
+
+Pin 76 = !TXA5; /* Switch 1 of TX ADDR - Unused */
+Pin 73 = !TXA4; /* Switch 2 of TX ADDR - Unused */
+Pin 70 = !TXA3; /* Switch 3 of TX ADDR - Unused */
+Pin 69 = !TXA2; /* Switch 4 of TX ADDR - Unused */
+Pin 68 = !TXA1; /* Switch 5 of TX ADDR - Unused */
+Pin 67 = !TXA0; /* Switch 6 of TX ADDR - Unused */
+
+Pin 81 = CLK;  /* 1.8432 MHz XTAL oscillator input. */
+
+Pin 79 = LED0; /* D1 (RHS). Red LED. Active High.       */
+Pin 75 = LED1; /* D2 (Centre). Yellow LED. Active High. */
+Pin 77 = LED2; /* D3 (LHS). Green LED. Active High.     */
+
+/* OMNIBUS SIGNALS */
+Pin 41 = !OMNI_IO_PAUSE; /* CD1, Input, Active Low  */
+Pin 40 = TP3;            /* CH2, Input, Active High */
+Pin 33 = INIT;           /* CR1, Input, Active High */
+
+Pin 36 = INTERNAL_IO;    /* CL1, Output, Active Low */
+Pin 39 = C0;             /* CE1, Output, Active Low */
+Pin 37 = C1;             /* CH1, Output, Active Low */
+Pin 31 = SKIP;           /* CS1, Output, Active Low */
+Pin 34 = INT_RQST;       /* CP1, Output, Active Low */
+
+Pin 58 = !MD3;  /* AP1, Input, Active Low. Device Code 4x   */
+Pin 55 = !MD4;  /* BK1, Input, Active Low. Device Code 2x   */ 
+/* Note: KL8-E schematic (figure 3-112 on page 3-160 of PDP-8/e Processor
+Maintenance Manual) erroneously shows MD4 as being pin BR1 */
+Pin 51 = !MD5;  /* BL1, Input, Active Low. Device Code 1x   */
+Pin 52 = !MD6;  /* BM1, Input, Active Low. Device Code x4   */
+Pin 49 = !MD7;  /* BP1, Input, Active Low. Device Code x2   */
+Pin 30 = !MD8;  /* DK1, Input, Active Low. Device Code x1   */
+Pin 29 = !MD9;  /* DL1, Input, Active Low. Operation Code 4 */
+Pin 28 = !MD10; /* DM1, Input, Active Low. Operation Code 2 */
+Pin 27 = !MD11; /* DP1, Input, Active Low. Operation Code 1 */
+
+/* Omnibus Data Bus. DATA0 is most-sig-bit, DATA11 is least-sig-bit */
+Pin 65 = DATA0;  /* AR1, Bi-Directional, Active Low, Unused */
+Pin 56 = DATA1;  /* AS1, Bi-Directional, Active Low, Unused */
+Pin 57 = DATA2;  /* AU1, Bi-Directional, Active Low, Unused */
+Pin 54 = DATA3;  /* AV1, Bi-Directional, Active Low, Unused */
+Pin 50 = DATA4;  /* BR1, Bi-Directional, Active Low */
+Pin 48 = DATA5;  /* BS1, Bi-Directional, Active Low */
+Pin 45 = DATA6;  /* BU1, Bi-Directional, Active Low */
+Pin 46 = DATA7;  /* BV1, Bi-Directional, Active Low */
+Pin 24 = DATA8;  /* DR1, Bi-Directional, Active Low */
+Pin 25 = DATA9;  /* DS1, Bi-Directional, Active Low */
+Pin 22 = DATA10; /* DU1, Bi-Directional, Active Low */
+Pin 21 = DATA11; /* DV1, Bi-Directional, Active Low */
+
+/* State machine definitions for both RX and TX */
+$DEFINE S_INIT  'b'00000000000
+$DEFINE S_IDLE  'b'00000000001
+$DEFINE S_START 'b'00000000010
+$DEFINE S_BIT0  'b'00000000100
+$DEFINE S_BIT1  'b'00000001000
+$DEFINE S_BIT2  'b'00000010000
+$DEFINE S_BIT3  'b'00000100000
+$DEFINE S_BIT4  'b'00001000000
+$DEFINE S_BIT5  'b'00010000000
+$DEFINE S_BIT6  'b'00100000000
+$DEFINE S_BIT7  'b'01000000000
+$DEFINE S_STOP1 'b'10000000000
+
+/* Baud rate dividers (for baud rates less than 230400) */
+pinnode = [BC11..0];
+pinnode = BR_CLR;
+
+/* UART TX-related nodes */
+pinnode = [TC0..2];    /* 3-bit TX bit counter */
+pinnode = [TS10..0];   /* TX state machine     */
+pinnode = [TSR0..7];   /* TX shift register    */
+pinnode = STROBE;
+
+/* UART RX-related nodes */
+pinnode = [RC0..2];    /* 3-bit RX bit counter */
+pinnode = [RS10..0];   /* RX state machine     */
+pinnode = [RSR0..7];   /* RX shift register    */
+pinnode = CNTR_START;  /* Used to detect centre of RX start bit */
+
+/* Counters for LEDs */
+pinnode = [TCK13..0];  /* Counts to 1/150 second and rolls over        */
+pinnode = [TLC3..0];   /* TX LED: Counts to 1/10 second and rolls over */
+pinnode = [RLC3..0];   /* RX LED: Counts to 1/10 second and rolls over */
+
+/* OMNIBUS device decode nodes */
+pinnode = RX_FLAG;
+pinnode = TX_FLAG;
+pinnode = RDRRUN;
+pinnode = INT_EN;
+
+
+/* UART Prescaler section */
+/* Board is fitted with a 1.8432 MHz XTAL */
+/* UART bit-tick counter: 8 CLK ticks/bit. At 230,400 baud = 4.340277 uSec/bit
+   =  230,400 baud */
+
+BD_110    = !RXA5 & !RXA4 & !RXA3;
+BD_300    = !RXA5 & !RXA4 &  RXA3;
+BD_600    = !RXA5 &  RXA4 & !RXA3;
+BD_1200   = !RXA5 &  RXA4 &  RXA3;
+BD_9600   =  RXA5 & !RXA4 & !RXA3;
+BD_38400  =  RXA5 & !RXA4 &  RXA3;
+BD_115200 =  RXA5 &  RXA4 & !RXA3;
+BD_230400 =  RXA5 &  RXA4 &  RXA3;
+
+BC11.t = BC0 & BC1 & BC2 & BC3 & BC4 & BC5 & BC6 & BC7 & BC8 & BC9 & BC10;
+BC10.t = BC0 & BC1 & BC2 & BC3 & BC4 & BC5 & BC6 & BC7 & BC8 & BC9;
+BC9.t  = BC0 & BC1 & BC2 & BC3 & BC4 & BC5 & BC6 & BC7 & BC8;
+BC8.t  = BC0 & BC1 & BC2 & BC3 & BC4 & BC5 & BC6 & BC7;
+BC7.t  = BC0 & BC1 & BC2 & BC3 & BC4 & BC5 & BC6;
+BC6.t  = BC0 & BC1 & BC2 & BC3 & BC4 & BC5;
+BC5.t  = BC0 & BC1 & BC2 & BC3 & BC4;
+BC4.t  = BC0 & BC1 & BC2 & BC3;
+BC3.t  = BC0 & BC1 & BC2;
+BC2.t  = BC0 & BC1;
+BC1.t  = BC0;
+BC0.t  = 'b'1;
+
+[BC11..0].ce = 'b'111111111111;
+[BC11..0].ck = CLK;
+[BC11..0].ar = BR_CLR # INIT;
+
+/*
+Timing parameters for BC to overflow 8 times per bit-length
+#CLKs = 1,843,200 / 8 / BaudRate
+
+B/Rate   #CLKs    #CLKs-1   --= BINARY =--
+ 110     2094.55  2093.55   1000 0010 1110
+ 300      768      767      0010 1111 1111
+ 600      384      383      0001 0111 1111
+1200      192      191      0000 1011 1111
+9600       24       23      0000 0001 0111
+38400       6        5      0000 0000 0101
+115200      2        1      0000 0000 0001
+230400      1       NA      ---- ---- ----
+*/
+
+BC_FULL = (BD_110    &  BC11 & !BC10 & !BC9 & !BC8 & !BC7 & !BC6 &  BC5 & !BC4 &  BC3 &  BC2 &  BC1 & !BC0)
+        # (BD_300    & !BC11 & !BC10 &  BC9 & !BC8 &  BC7 &  BC6 &  BC5 &  BC4 &  BC3 &  BC2 &  BC1 &  BC0)
+        # (BD_600    & !BC11 & !BC10 & !BC9 &  BC8 & !BC7 &  BC6 &  BC5 &  BC4 &  BC3 &  BC2 &  BC1 &  BC0)
+        # (BD_1200   & !BC11 & !BC10 & !BC9 & !BC8 &  BC7 & !BC6 &  BC5 &  BC4 &  BC3 &  BC2 &  BC1 &  BC0)
+        # (BD_9600   & !BC11 & !BC10 & !BC9 & !BC8 & !BC7 & !BC6 & !BC5 &  BC4 & !BC3 &  BC2 &  BC1 &  BC0)
+        # (BD_38400  & !BC11 & !BC10 & !BC9 & !BC8 & !BC7 & !BC6 & !BC5 & !BC4 & !BC3 &  BC2 & !BC1 &  BC0)
+        # (BD_115200 & !BC11 & !BC10 & !BC9 & !BC8 & !BC7 & !BC6 & !BC5 & !BC4 & !BC3 & !BC2 & !BC1 &  BC0);
+
+/* BR_CLR goes high 8 times per bit */
+/* Note: BR_CLR rises on falling edge of master CLK and its pulse length is one
+   CLK cycle */
+BR_CLR.d = BC_FULL;
+BR_CLR.ck = !CLK;
+BR_CLR.AR = INIT;
+
+/* Baud Rate Prescaler Output */
+BRPSO = ( BD_230400 & CLK)       /* Use 1.8432 Mhz CLK for highest speed */
+      # (!BD_230400 & BR_CLR);   /* Use BC[11.0] Prescaler otherwise     */
+
+
+/* Decode OMNIBUS device addresses */
+SW_DEV_NONE = !RXA2 & !RXA1 & !RXA0;
+SW_DEV_0304 = !RXA2 & !RXA1 &  RXA0;
+SW_DEV_4041 = !RXA2 &  RXA1 & !RXA0;
+SW_DEV_4243 = !RXA2 &  RXA1 &  RXA0;
+SW_DEV_4445 =  RXA2 & !RXA1 & !RXA0;
+SW_DEV_4647 =  RXA2 & !RXA1 &  RXA0;
+SW_DEV_3435 =  RXA2 &  RXA1 & !RXA0;
+SW_DEV_1112 =  RXA2 &  RXA1 &  RXA0;
+
+DEV_03 = OMNI_IO_PAUSE & !MD3 & !MD4 & !MD5 & !MD6 &  MD7 &  MD8;
+DEV_04 = OMNI_IO_PAUSE & !MD3 & !MD4 & !MD5 &  MD6 & !MD7 & !MD8;
+DEV_40 = OMNI_IO_PAUSE &  MD3 & !MD4 & !MD5 & !MD6 & !MD7 & !MD8;
+DEV_41 = OMNI_IO_PAUSE &  MD3 & !MD4 & !MD5 & !MD6 & !MD7 &  MD8;
+DEV_42 = OMNI_IO_PAUSE &  MD3 & !MD4 & !MD5 & !MD6 &  MD7 & !MD8;
+DEV_43 = OMNI_IO_PAUSE &  MD3 & !MD4 & !MD5 & !MD6 &  MD7 &  MD8;
+DEV_44 = OMNI_IO_PAUSE &  MD3 & !MD4 & !MD5 &  MD6 & !MD7 & !MD8;
+DEV_45 = OMNI_IO_PAUSE &  MD3 & !MD4 & !MD5 &  MD6 & !MD7 &  MD8;
+DEV_46 = OMNI_IO_PAUSE &  MD3 & !MD4 & !MD5 &  MD6 &  MD7 & !MD8;
+DEV_47 = OMNI_IO_PAUSE &  MD3 & !MD4 & !MD5 &  MD6 &  MD7 &  MD8;
+DEV_34 = OMNI_IO_PAUSE & !MD3 &  MD4 &  MD5 &  MD6 & !MD7 & !MD8;
+DEV_35 = OMNI_IO_PAUSE & !MD3 &  MD4 &  MD5 &  MD6 & !MD7 &  MD8;
+DEV_11 = OMNI_IO_PAUSE & !MD3 & !MD4 &  MD5 & !MD6 & !MD7 &  MD8;
+DEV_12 = OMNI_IO_PAUSE & !MD3 & !MD4 &  MD5 & !MD6 &  MD7 & !MD8;
+
+RX_ADRS = SW_DEV_0304 & DEV_03
+        # SW_DEV_4041 & DEV_40
+        # SW_DEV_4243 & DEV_42
+        # SW_DEV_4445 & DEV_44
+        # SW_DEV_4647 & DEV_46
+        # SW_DEV_3435 & DEV_34
+        # SW_DEV_1112 & DEV_11;
+
+TX_ADRS = SW_DEV_0304 & DEV_04
+        # SW_DEV_4041 & DEV_41
+        # SW_DEV_4243 & DEV_43
+        # SW_DEV_4445 & DEV_45
+        # SW_DEV_4647 & DEV_47
+        # SW_DEV_3435 & DEV_35
+        # SW_DEV_1112 & DEV_12;
+
+INTERNAL_IO = !(RX_ADRS # TX_ADRS);
+
+RX_FLAG.d = 'b'1;   /* Value to clock into this flag register  */
+RX_FLAG.ck = !RS10; /* Activate flag at centre of RX Stop Bit  */
+RX_FLAG.ar = (RX_ADRS & !MD9 & !MD10 & !MD11 & TP3) # (RX_ADRS & MD10 & !MD11 & TP3) # INIT;
+    /* Clear RX_FLAG on receiving Device Code 6030, 6032 or 6036 */
+
+C0 = !(RX_ADRS & MD10 & !MD11);                              /* Device Code 6032 or 6036       */
+C1 = !((RX_ADRS & MD9 &  !MD11) # (RX_ADRS & MD10 & !MD11)); /* Device Code 6032, 6034 or 6036 */
+
+RDRRUN.D = 'B'0;
+RDRRUN.CK = RS2;  /* Clear RDRRUN during RX start bit. This possibly differs from the KL8-E approach */
+RDRRUN.AP = RX_ADRS & MD10 & !MD11 & TP3; /* Device Code 6032 or 6036 */
+RDRRUN.AR = INIT;
+
+[DATA0..3].D = 'b'1111; /* This stops the fitter using these pins for other purposes */
+[DATA4..11].D = ![RSR7..0];
+[DATA0..11].CK = !RS10; /* Centre of RX Stop Bit 1 */
+[DATA0..11].OE = RX_ADRS & MD9 & !MD11; /* Device code 6034 or 6036 */
+[DATA0..11].AR = INIT;
+
+TX_FLAG.d = 'b'1;
+TX_FLAG.ck = TS10; /* Set flag at start of Stop Bit */
+TX_FLAG.ap = (TX_ADRS & !MD9 & !MD10 & !MD11 & TP3); /* Dev code 6040         */
+TX_FLAG.ar = (TX_ADRS & MD10 & !MD11 & TP3) # INIT;  /* Dev code 6042 or 6046 */
+
+SKIP = !((RX_ADRS & !MD9 & !MD10 & MD11 & RX_FLAG)  /* Device Code 6031 */
+       # (TX_ADRS & !MD9 & !MD10 & MD11 & TX_FLAG)  /* Device Code 6041 */
+	   # (TX_ADRS & MD9 & !MD10 & MD11 & INT_EN & (RX_FLAG # TX_FLAG))); /* Device Code 6045 */
+
+STROBE.D = 'b'0;
+STROBE.CK = TS2;  /* Clear the STROBE once we start sending the byte */
+STROBE.AP = TX_ADRS & MD9 & !MD11 & TP3; /* Device Code 6044 or 6046 */
+STROBE.AR = INIT;
+
+/* [TSR7..0].d  = ![DATA4..11]; */  /* Copies ACC to TX shift register */
+TSR7.D = !DATA4.IO;
+TSR6.D = !DATA5.IO;
+TSR5.D = !DATA6.IO;
+TSR4.D = !DATA7.IO;
+TSR3.D = !DATA8.IO;
+TSR2.D = !DATA9.IO;
+TSR1.D = !DATA10.IO;
+TSR0.D = !DATA11.IO;
+[TSR7..0].ck = TX_ADRS & MD9 & !MD11 & TP3;  /* Latch the TX data when we receive DC 6044 or 6046 */
+[TSR7..0].ar = 'b'0;
+
+/* Configure the INT-ENBL flip flop */
+INT_EN.d = !DATA11;
+INT_EN.ck = RX_ADRS & MD9 & !MD10 & MD11 & TP3; /* Dev code 6035 */
+INT_EN.ap = INIT; /* Enable interrupts on INIT (eg when CLEAR SW pressed) */
+INT_EN.ar = 'b'0;
+
+INT_RQST = !(INT_EN & (RX_FLAG # TX_FLAG));
+
+
+/* Setup a free running counter with a period of 12,288 / 1,843,200 = 1/150 sec */
+TICK_ROLL = !TCK13 & !TCK12 & !TCK11 & !TCK10 & !TCK9 & !TCK8
+          & !TCK7 & !TCK6 & !TCK5 & !TCK4 & !TCK3 & !TCK2 & !TCK1 & !TCK0; /*      Tick = 0 */
+TICK_CLR  =  TCK13 &  TCK12 & !TCK11 & !TCK10 & !TCK9 & !TCK8
+          & !TCK7 & !TCK6 & !TCK5 & !TCK4 & !TCK3 & !TCK2 & !TCK1 & !TCK0; /* Tick = 12,288 */
+
+TCK13.t = TCK0 & TCK1 & TCK2 & TCK3 & TCK4 & TCK5 & TCK6 & TCK7 & TCK8 & TCK9 & TCK10 & TCK11 & TCK12;
+TCK12.t = TCK0 & TCK1 & TCK2 & TCK3 & TCK4 & TCK5 & TCK6 & TCK7 & TCK8 & TCK9 & TCK10 & TCK11;
+TCK11.t = TCK0 & TCK1 & TCK2 & TCK3 & TCK4 & TCK5 & TCK6 & TCK7 & TCK8 & TCK9 & TCK10;
+TCK10.t = TCK0 & TCK1 & TCK2 & TCK3 & TCK4 & TCK5 & TCK6 & TCK7 & TCK8 & TCK9;
+TCK9.t  = TCK0 & TCK1 & TCK2 & TCK3 & TCK4 & TCK5 & TCK6 & TCK7 & TCK8;
+TCK8.t  = TCK0 & TCK1 & TCK2 & TCK3 & TCK4 & TCK5 & TCK6 & TCK7;
+TCK7.t  = TCK0 & TCK1 & TCK2 & TCK3 & TCK4 & TCK5 & TCK6;
+TCK6.t  = TCK0 & TCK1 & TCK2 & TCK3 & TCK4 & TCK5;
+TCK5.t  = TCK0 & TCK1 & TCK2 & TCK3 & TCK4;
+TCK4.t  = TCK0 & TCK1 & TCK2 & TCK3;
+TCK3.t  = TCK0 & TCK1 & TCK2;
+TCK2.t  = TCK0 & TCK1;
+TCK1.t  = TCK0;
+TCK0.t  = 'b'1;
+
+[TCK13..0].ce = 'b'11111111111111;
+[TCK13..0].ck = CLK;
+[TCK13..0].ar = TICK_CLR # INIT;
+
+
+/* TX LED code follows */
+TLC_FULL = TLC3 & TLC2 & TLC1 & TLC0; /* Equals 0.1 seconds */
+
+TLC3.t  = TLC0 & TLC1 & TLC2;
+TLC2.t  = TLC0 & TLC1;
+TLC1.t  = TLC0;
+TLC0.t  = 'b'1;
+
+[TLC3..0].ce = 'b'1111;
+[TLC3..0].ck = TICK_ROLL;  /* Inrement the TLC timer every 1/150 second        */
+[TLC3..0].ar = INIT # TS2; /* Reset TX LED Timer at start of each TX start bit */
+
+LED1.D = 'b'0;
+LED1.CK = TLC_FULL;  /* Turn LED1 (D2, Yellow, Centre) off when timer expires      */
+LED1.AP = TS2;       /* Turn LED1 (D2, Yellow, Centre) on at start of TX start bit */
+LED1.AR = INIT;
+
+
+/* RX LED code follows */
+RLC_FULL = RLC3 & RLC2 & RLC1 & RLC0; /* Equals 0.1 seconds */
+
+RLC3.t  = RLC0 & RLC1 & RLC2;
+RLC2.t  = RLC0 & RLC1;
+RLC1.t  = RLC0;
+RLC0.t  = 'b'1;
+
+[RLC3..0].ce = 'b'1111;
+[RLC3..0].ck = TICK_ROLL;  /* Increment the RLC timer every 1/150 second       */
+[RLC3..0].ar = INIT # RS2; /* Reset RX LED Timer at start of each RX start bit */
+
+LED2.D = 'b'0;
+LED2.CK = RLC_FULL;  /* Turn LED2 (D3, Green, LHS) off when timer expires      */
+LED2.AP = RS2;       /* Turn LED2 (D3, Green, LHS) on at start of RX start bit */
+LED2.AR = INIT;
+
+
+/* INT-ENBL LED code follows */
+LED0 = INT_EN;        /* Turn LED0 (D1, Red, RHS) on when INTs are turned on   */
+/* LED0 = BRPSO; */   /* For debugging purposes only                           */
+
+
+/* UART TX timing */
+TX_BIT_FULL =        TC2 &  TC1 &  TC0; /* Full count = 7 */
+TX_BIT_ALMOST_FULL = TC2 & !TC1 &  TC0; /* Full count - 2 */
+
+TC2.t = TC0 & TC1;
+TC1.t = TC0;
+TC0.t = 'b'1;
+
+[TC2..0].ce = 'b'111;
+[TC2..0].ck = BRPSO;  /* Baud Rate Pre-Scaler Output drives the bit-tick counter */
+[TC2..0].ar = TS0;    /* Hold at zero until TX operation commences */
+
+/* State machine for TX data */
+field tx_state = [TS10..0];
+tx_state.ck = BRPSO;
+
+Sequence tx_state {
+    present S_INIT
+            next S_IDLE;
+    present S_IDLE                       /* TS0  */
+            if (STROBE) next S_START;
+            default next S_IDLE;
+    present S_START                      /* TS1  */
+            if (TX_BIT_FULL) next S_BIT0;
+            default next S_START;
+    present S_BIT0                       /* TS2  */
+            if (TX_BIT_FULL) next S_BIT1;
+            default next S_BIT0;
+    present S_BIT1                       /* TS3  */
+            if (TX_BIT_FULL) next S_BIT2;
+            default next S_BIT1;
+    present S_BIT2                       /* TS4  */
+            if (TX_BIT_FULL) next S_BIT3;
+            default next S_BIT2;
+    present S_BIT3                       /* TS5  */
+            if (TX_BIT_FULL) next S_BIT4;
+            default next S_BIT3;
+    present S_BIT4                       /* TS6  */
+            if (TX_BIT_FULL) next S_BIT5;
+            default next S_BIT4;
+    present S_BIT5                       /* TS7  */
+            if (TX_BIT_FULL) next S_BIT6;
+            default next S_BIT5;
+    present S_BIT6                       /* TS8  */
+            if (TX_BIT_FULL) next S_BIT7;
+            default next S_BIT6;
+    present S_BIT7                       /* TS9  */
+            if (TX_BIT_FULL) next S_STOP1;
+            default next S_BIT7;
+    present S_STOP1                      /* TS10 */
+            if (TX_BIT_ALMOST_FULL) next S_IDLE;
+            default next S_STOP1;
+}
+
+
+UART_TX =  TS0         /* S_IDLE  */
+    # (TS2 & TSR0)   /* S_BIT0  */
+    # (TS3 & TSR1)   /* S_BIT1  */
+    # (TS4 & TSR2)   /* S_BIT2  */
+    # (TS5 & TSR3)   /* S_BIT3  */
+    # (TS6 & TSR4)   /* S_BIT4  */
+    # (TS7 & TSR5)   /* S_BIT5  */
+    # (TS8 & TSR6)   /* S_BIT6  */
+    # (TS9 & TSR7)   /* S_BIT7  */
+    #  TS10;          /* S_STOP1 */
+
+
+/* Detect commencement of RX start bit, to transition IDLE -> START state */
+EDGE_DETECT = !UART_RX;
+
+
+/* Detect centre of RX start bit */
+CNTR_START.d  = RS1 & RX_BIT_HALF;
+CNTR_START.ck = BRPSO;
+CNTR_START.ar = INIT;
+
+
+/* UART RX timing */
+RX_BIT_HALF =  RC2 & !RC1 & !RC0;
+  /* Value of 4 in above line will lag centre of each bit by 0 to 1/8 bit time  */
+  /* Change value to 3, if you want sampling to lead the centre of the bit time */
+RX_BIT_FULL =  RC2 &  RC1 &  RC0;
+
+RC2.t = RC0 & RC1;
+RC1.t = RC0;
+RC0.t = 'b'1;
+
+[RC2..0].ce = 'b'111;
+[RC2..0].ck = !BRPSO;  /* Baud Rate Pre-Scaler Output drives the bit-tick counter */
+[RC2..0].ar = RS0 # CNTR_START; /* S_IDLE or at centre of S_START */
+
+
+/* State machine for RX data */
+field rx_state = [RS10..0];
+rx_state.ck = BRPSO;
+
+Sequence rx_state {
+    present S_INIT
+        next S_IDLE;
+    present S_IDLE                      /* Current state = RS0. Waiting for START bit negative edge */
+        if (EDGE_DETECT)  next S_START;
+        default next S_IDLE;
+    present S_START                     /* Current state = RS1. Waiting for centre of START bit */
+        if (RX_BIT_HALF) next S_BIT0;
+        if (UART_RX) next S_IDLE;       /* Return to S_IDLE if false start */
+        default next S_START;
+    present S_BIT0                      /* Current state = RS2. Waiting for centre of Data Bit 0 */
+        if (RX_BIT_FULL) next S_BIT1;
+        default next S_BIT0;
+    present S_BIT1
+        if (RX_BIT_FULL) next S_BIT2;
+        default next S_BIT1;
+    present S_BIT2
+        if (RX_BIT_FULL) next S_BIT3;
+        default next S_BIT2;
+    present S_BIT3
+        if (RX_BIT_FULL) next S_BIT4;
+        default next S_BIT3;
+    present S_BIT4
+        if (RX_BIT_FULL) next S_BIT5;
+        default next S_BIT4;
+    present S_BIT5
+        if (RX_BIT_FULL) next S_BIT6;
+        default next S_BIT5;
+    present S_BIT6
+        if (RX_BIT_FULL) next S_BIT7;
+        default next S_BIT6;
+    present S_BIT7
+        if (RX_BIT_FULL) next S_STOP1;
+        default next S_BIT7;
+    present S_STOP1                     /* Current state = RS10. Waiting for centre of STOP bit */
+        if (RX_BIT_FULL) next S_IDLE;
+        default next S_STOP1;
+}   
+
+[RSR0..7].D = UART_RX;
+[RSR0..7].AR = 'b'0;
+[RSR0..7].CE = 'b'11111111;
+RSR0.CK = RS3; /* latch bit 0 at centre of bit time */
+RSR1.CK = RS4; /* latch bit 1 one bit time later */
+RSR2.CK = RS5; /* latch bit 2 one bit time later */
+RSR3.CK = RS6; /* latch bit 3 one bit time later */
+RSR4.CK = RS7; /* latch bit 4 one bit time later */
+RSR5.CK = RS8; /* latch bit 5 one bit time later */
+RSR6.CK = RS9; /* latch bit 6 one bit time later */
+RSR7.CK = RS10; /* latch bit 7 one bit time later */
