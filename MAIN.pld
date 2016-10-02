@@ -59,7 +59,7 @@ Functionality:
          ON      ON     OFF     115200
          ON      ON      ON     230400
   7. The board requires a minimum of 0.5 stop bits on the receive side, and
-     sends two stop bits.
+     sends one stop bit.
 
 It can:
 
@@ -113,21 +113,21 @@ Revision History:
      and 230400).
   4. TX and RX state machines are now 8 ticks per bit (formerly 16 ticks per
      bit). This change was made to enable the board to be used at 230,400 baud
-	 without changing the oscillator frequency.
+     without changing the oscillator frequency.
   5. The RX state machine has been tuned so that all bits are now sampled as
      close as possible to the nominal centre of the bit-time apperture. The
-	 maximum samploing error now is 12.5% of one bit time. Sampling lags the
-	 centre of the bit-time by 0 to 12.5% of one bit time. This has been
-	 verified by viewing the RSn strobes on a logic16 logic analyser.
+     maximum samploing error now is 12.5% of one bit time. Sampling lags the
+     centre of the bit-time by 0 to 12.5% of one bit time. This has been
+     verified by viewing the RSn strobes on a logic16 logic analyser.
   6. The RX side now only waits for 0.5 stop bits, so will receive bytes from
      a sender configured for 1.0, 1.5 or 2.0 stop bits.
   7. The TX side now only sends 7/8 of a stop bit (before starting to send the
      next TX byte). This change was necessary to enable the board to correctly
-	 echo-back an ASCII file that is dumped to the board. Sending a byte now
-	 consumes 79 "ticks" compared to the nominal 80 ticks. If a full stop bit
-	 is sent, the receiver will overrun the transmitter and the echoed text
-	 will be corrupted. The timing on the TX side was carefully studied on the
-	 logic analyser to confirm no other anomolies).
+     echo-back an ASCII file that is dumped to the board. Sending a byte now
+     consumes 79 "ticks" compared to the nominal 80 ticks. If a full stop bit
+     is sent, the receiver will overrun the transmitter and the echoed text
+     will be corrupted. The timing on the TX side was carefully studied on the
+     logic analyser to confirm no other anomolies).
   8. Various changes were made to the timing of flags and register loads.
 
 27-SEP-2016 (V01.00): Initial version.
@@ -379,7 +379,7 @@ TX_FLAG.ar = (TX_ADRS & MD10 & !MD11 & TP3) # INIT;  /* Dev code 6042 or 6046 */
 
 SKIP = !((RX_ADRS & !MD9 & !MD10 & MD11 & RX_FLAG)  /* Device Code 6031 */
        # (TX_ADRS & !MD9 & !MD10 & MD11 & TX_FLAG)  /* Device Code 6041 */
-	   # (TX_ADRS & MD9 & !MD10 & MD11 & INT_EN & (RX_FLAG # TX_FLAG))); /* Device Code 6045 */
+       # (TX_ADRS & MD9 & !MD10 & MD11 & INT_EN & (RX_FLAG # TX_FLAG))); /* Device Code 6045 */
 
 STROBE.D = 'b'0;
 STROBE.CK = TS2;  /* Clear the STROBE once we start sending the byte */
